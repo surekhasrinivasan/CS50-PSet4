@@ -21,35 +21,39 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    FILE* img = NULL;
+    FILE *img = NULL;
 
     // create 512 byte buffer array
     typedef uint8_t  BYTE;
     BYTE buffer[512];
 
     //initialize variables
-    int jpg = 1;
+    int jpg = 1;//1 if true, 0 if false
     int fnum = 0;
     char filename[8];
 
-    while (fread (&buffer, 512, 1, file) == 1)
+    while (fread(&buffer, 512, 1, file) == 1)
     {
-        if (jpg == 1){ //Start of new jpeg?
-            if(buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
-            { //yes
+        //start of a new jpeg
+        if (jpg == 1)
+        {
+            if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
+            {
                 jpg = 0;
                 sprintf(filename, "%03i.jpg", fnum);
                 img = fopen(filename, "w");
                 fwrite(&buffer, 512, 1, img);
             }
             else
-            { //no
+            {
                 printf("nothing\n");
             }
         }
-        else{ //already found a jpeg?
-            if(buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
-            { //yes
+        //If already found a jpeg
+        else
+        {
+            if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
+            {
                 fclose(img);
                 fnum++;
                 sprintf(filename, "%03i.jpg", fnum);
@@ -57,13 +61,11 @@ int main(int argc, char *argv[])
                 fwrite(&buffer, 512, 1, img);
             }
             else
-            { //no
+            {
                 fwrite(&buffer, 512, 1, img);
             }
         }
     }
     fclose(img);
-    //free(buffer);
-return 0;
-
+    return 0;
 }
