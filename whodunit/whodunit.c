@@ -75,7 +75,8 @@ int main(int argc, char *argv[])
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
             //convert all the pure red pixels to white pixels
-            if (triple.rgbtBlue == 0x00 && triple.rgbtGreen == 0x00 && triple.rgbtRed == 0xff) {
+            if (triple.rgbtBlue == 0x00 && triple.rgbtGreen == 0x00 && triple.rgbtRed == 0xff)
+            {
                 triple.rgbtBlue = 0xff;
                 triple.rgbtGreen = 0xff;
                 triple.rgbtRed = 0xff;
